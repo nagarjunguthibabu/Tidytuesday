@@ -14,7 +14,7 @@ str(data)
 
 # first plot
 data %>% 
-  count(Entity, wt = num_objects, sort = TRUE) %>% 
+  count(Entity, wt = num_objects, sort = TRUE) %>% view()
   slice(1:10) %>% 
   mutate(Entity = fct_reorder(Entity, n)) %>% 
   ggplot(aes(n, Entity, fill = Entity))  +
@@ -31,3 +31,28 @@ data %>%
        y = element_blank()
        )
   
+  
+# trend of objects per country per year
+data %>% 
+  add_count(Entity, wt = num_objects) %>% 
+  filter(n >= 40) %>% 
+  mutate(Entity = fct_reorder(Entity, -num_objects)) %>% 
+  ggplot(aes(Year, num_objects, color = Entity)) +
+  geom_line() +
+  facet_wrap(~Entity, scales = "free")
+
+## looks like world is a total of other entities
+data %>% 
+  filter(Entity != "World") %>% 
+  count(Year, wt = num_objects) %>% 
+  left_join(data %>% filter(Entity == "World") %>% mutate(world = num_objects) %>% select(Year, world)) %>% 
+  filter(n != world)
+
+data %>% filter(Year == "1965")
+  
+  
+library(countrycode)
+countryname_dict
+
+  countrycode(origin = data[,"Entity"] %>% unique(), origin = "country.name", destination = "region")
+
