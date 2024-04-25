@@ -52,7 +52,6 @@ data %>% filter(Year == "1965")
   
   
 library(countrycode)
-countryname_dict
 
-  countrycode(origin = data[,"Entity"] %>% unique(), origin = "country.name", destination = "region")
+countrycode(origin = data[,"Entity"] %>% unique(), origin = "country.name", destination = "region")
 
