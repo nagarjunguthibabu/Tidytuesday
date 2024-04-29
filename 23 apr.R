@@ -53,5 +53,6 @@ data %>% filter(Year == "1965")
   
 library(countrycode)
 
-countrycode(origin = data[,"Entity"] %>% unique(), origin = "country.name", destination = "region")
+countrycode(data %>% pull(Entity), origin = "country.name", destination = "region")
+
 
