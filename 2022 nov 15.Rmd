@@ -1,0 +1,56 @@
+---
+title: "2022 nov 15"
+author: "Nagarjun G B"
+date: "2024-06-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytuesdayR)
+
+theme_set(theme_light(base_size = 14, base_family = "Volvo Antikva"))
+
+
+clean_data <- . %>% 
+  select(-timestamp) %>% 
+  mutate(date = ymd(date))
+  
+
+image_alt <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-15/image_alt.csv') %>% 
+  clean_data()
+color_contrast <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-15/color_contrast.csv') %>% 
+  clean_data()
+ally_scores <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-15/ally_scores.csv') %>% 
+  clean_data()
+bytes_total <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-15/bytes_total.csv') %>% 
+  clean_data()
+speed_index <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-15/speed_index.csv') %>% 
+  clean_data()
+
+
+```
+
+```{r}
+combined_percentiles <- bind_rows(speed_index, ally_scores, bytes_total)
+
+combined_percentiles %>% 
+  ggplot(aes(date, p50, color = client)) +
+  geom_ribbon(aes(ymin = p25, ymax = p75), alpha = 0.25) +
+  facet_wrap(~measure, scales = "free_y", nrow = 3)+
+  labs(y = "Median scores (with 25th-75th percentile)",
+       color = "Client")
+
+combined_percentage <- bind_rows(image_alt, color_contrast)
+
+combined_percentage %>% 
+  ggplot(aes(date, percent/100, color = client)) +
+  geom_line() +
+  facet_wrap(~measure)+
+  scale_y_continuous(labels = scales::percent_format())+
+  labs(y = "Percentage")
+  
+
+```
+

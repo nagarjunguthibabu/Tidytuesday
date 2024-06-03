@@ -56,3 +56,5 @@ library(countrycode)
 countrycode(data %>% pull(Entity), origin = "country.name", destination = "region")
 
 
+
+
